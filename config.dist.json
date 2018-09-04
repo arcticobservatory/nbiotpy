@@ -1,0 +1,16 @@
+{
+  "server": {
+    "ip": "127.0.0.1",
+    "remote_port": "12345",
+    "local_port": "9000"
+  },
+  "thing": {
+    "name": "000001",
+    "auth": "ffffffffffffffff"
+  },
+  "serial": {
+    "port": "/dev/ttyACM0",
+    "baudrate": 9600,
+    "timeout": 5.0
+  }
+}
