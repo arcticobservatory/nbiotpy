@@ -1,10 +1,10 @@
-#Introduction
+# Introduction
 It is a python implementation for NB-IoT ublox SARA-N210 modem. The code was tested with Raspberry PI 3B and 
 [EE-NBIOT-01 breakout module](https://shop.exploratory.engineering/collections/frontpage/products/ee-nbiot-01-v1-1-breakout-module) 
 (NB-IoT module for Europe. Sim locked to Telenor Norway and can only be used in Norway).
 
 
-#Hardware connections
+# Hardware connections
 
 The following four pins from EE-NBIOT-01 module needs to be connected:
 - Tx to Tx GPIO014
@@ -12,11 +12,11 @@ The following four pins from EE-NBIOT-01 module needs to be connected:
 - VCC to 3.3V
 - GND to GND
 
-#TODO
+# TODO
 - [ ] CoAP
 - [ ] Downlink (receive from)
 
-#Licence
+# Licence
 
 Copyright (c) 2018, DAO (Distributed Arctic Observatory).
 All rights reserved.
