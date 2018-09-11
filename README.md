@@ -1,6 +1,6 @@
 # Introduction
 
-It is a python implementation for NB-IoT ublox SARA-N210 modem. The code was tested with Raspberry PI 3B and 
+This repository contains python library for NB-IoT ublox SARA-N210 modem. The code was tested with Raspberry PI 3B and 
 [EE-NBIOT-01 breakout module](https://shop.exploratory.engineering/collections/frontpage/products/ee-nbiot-01-v1-1-breakout-module) 
 (NB-IoT module for Europe. Sim locked to Telenor Norway and can only be used in Norway).
 
