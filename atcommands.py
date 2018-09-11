@@ -5,11 +5,19 @@ RADIO_ON = "CFUN=1"
 RADIO_OFF = "CFUN=0"
 REBOOT = "NRB"
 GPRS = "CGATT?"
+CGAC = "CGACT={}"
 SOCR = "NSOCR=\"DGRAM\",17,{},1"
 SOCL = "NSOCL={}"
 IMEI = "CGSN=1"
 IMSI = "CIMI"
 SOST = "NSOST={}"
+SORF = "NSORF={},{}"
+CONS = "CSCON?"
+SCONN = "CSCON={}"
+CGDCS = "CGDCONT={}"
+CGDCR = "CGDCONT?"
+COPS = "COPS={}"
+CGPR = "CGPADDR={}"
 
 MSG_TYPE = "1"
 
@@ -25,5 +33,13 @@ RESPONSE = {
     SOCL: (R_OK, None),
     IMEI: (R_OK, "\+CGSN\:\s+(\d{15})"),
     IMSI: (R_OK, "(\d{15})"),
-    SOST: (R_OK, None)
+    SOST: (R_OK, None),
+    SORF: (R_OK, None),
+    CONS: (R_OK, None),
+    SCONN: (R_OK, None),
+    CGDCS: (R_OK, None),
+    CGDCR: (R_OK, None),
+    COPS: (R_OK, None),
+    CGPR: (R_OK, None),
+    CGAC: (R_OK, None)
 }

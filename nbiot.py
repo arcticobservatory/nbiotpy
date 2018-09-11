@@ -30,7 +30,10 @@ class NbIoT:
     def connect(self):
         self.reboot()
         self.radio_on()
+        self.set_apn()
+        self.select_operator()
         self.check_if_attached()
+        self.activate_pdp_context()
 
     def disconnect(self):
         self.radio_off()
@@ -79,7 +82,7 @@ class NbIoT:
         print("### CREATE_SOCKET ###")
 
         if self.socket < 0:
-            self._complex_cmd = AT.SOCR.format(self.config['server']['local_port'])
+            self._complex_cmd = AT.SOCR.format(self.config['thing']['port'])
             status, self.socket = self.__execute_cmd(AT.SOCR)
             self.socket = int(self.socket)
 
@@ -112,13 +115,30 @@ class NbIoT:
         self._complex_cmd = "{},\"{}\",{},{},\"{}\"".format(
             cmd,
             self.config['server']['ip'],
-            self.config['server']['remote_port'],
+            self.config['server']['port'],
             msg_len,
             binascii.hexlify(msg.encode()).decode()
         )
 
         status, _ = self.__execute_cmd(AT.SOST)
         print("##############")
+
+    def receive_from(self):
+        print("### RECEIVE ###")
+        self._complex_cmd = AT.SORF.format(self.socket, 200)
+
+        status, _ = self.__execute_cmd(AT.SORF)
+        print("##############")
+
+    def get_connection_status(self):
+        print("### CONNECTION STATUS ###")
+        status, _ = self.__execute_cmd(AT.CONS)
+        print("##############")
+
+    def set_urc(self, n):
+        print("### SET URC ###")
+        self._complex_cmd = AT.SCONN.format(n)
+        status, _ = self.__execute_cmd(AT.SCONN)
 
     def get_imei(self):
         print("### IMEI ###")
@@ -130,6 +150,35 @@ class NbIoT:
         print("### IMSI ###")
         if self.imsi is None:
             status, self.imsi = self.__execute_cmd(AT.IMSI)
+        print("##############")
+
+    def set_apn(self):
+        print("### SET APN ###")
+        self._complex_cmd = AT.CGDCS.format("1,\"IP\",\"{}\"".format(self.config['mno']['apn']))
+        status, _ = self.__execute_cmd(AT.CGDCS)
+        print("##############")
+
+    def activate_pdp_context(self):
+        print("### ACTIVATE PDP CONTEXT")
+        self._complex_cmd = AT.CGAC.format("{},{}".format(1, 1))
+        status, _ = self.__execute_cmd(AT.CGAC)
+        print("##############")
+
+    def get_pdp_context(self):
+        print("### PDP CONTEXT")
+        status, _ = self.__execute_cmd(AT.CGDCR)
+        print("##############")
+
+    def get_pdp_address(self):
+        print("### PDP CONTEXT")
+        self._complex_cmd = AT.CGPR.format("1")
+        status, _ = self.__execute_cmd(AT.CGPR)
+        print("##############")
+
+    def select_operator(self):
+        print("### SELECT OPERATOR ###")
+        self._complex_cmd = AT.COPS.format("1,2,\"{}\"".format(self.config['mno']['mcc_mnc']))
+        status, _ = self.__execute_cmd(AT.COPS)
         print("##############")
 
     def __execute_cmd(self, cmd):
@@ -150,6 +199,22 @@ class NbIoT:
 
         print("---> %s" % full_cmd)
         self.serial.write(full_cmd.encode())
+
+    def read_urc(self):
+        while True:
+            x = self.serial.readline()
+            try:
+                x = x.decode()
+            except UnicodeDecodeError as e:
+                continue
+
+            x = x.replace('\r', '').replace('\n', '')
+
+            if len(x) == 0:
+                time.sleep(0.1)
+                continue
+
+            print("<-- %s" % x)
 
     def __read_response(self):
         last_line, expected_pattern = AT.RESPONSE[self._cmd]

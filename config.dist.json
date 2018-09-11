@@ -1,12 +1,16 @@
 {
   "server": {
     "ip": "127.0.0.1",
-    "remote_port": "12345",
-    "local_port": "9000"
+    "port": "12345"
+  },
+  "mno": {
+    "apn": "apn",
+    "mcc_mnc": "FFF"
   },
   "thing": {
     "name": "000001",
-    "auth": "ffffffffffffffff"
+    "auth": "ffffffffffffffff",
+    "port": 9000
   },
   "serial": {
     "port": "/dev/ttyACM0",
