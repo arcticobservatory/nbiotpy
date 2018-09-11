@@ -21,7 +21,7 @@ All the parameteres specified in the config file should be reviewed and updated.
 - [ ] CoAP
 - [ ] Downlink (receive from)
 
-# Licence
+# BSD Licence
 
 Copyright (c) 2018, DAO (Distributed Arctic Observatory).
 All rights reserved.
