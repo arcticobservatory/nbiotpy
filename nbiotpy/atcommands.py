@@ -2,7 +2,7 @@ PREFIX = "AT+"
 POSTFIX = "\r\n"
 
 RADIO_ON = "CFUN=1"
-RADIO_OFF = "CFUN=0"
+RADIO_OFF = "c"
 REBOOT = "NRB"
 GPRS = "CGATT?"
 CGAC = "CGACT={}"
@@ -18,6 +18,8 @@ CGDCS = "CGDCONT={}"
 CGDCR = "CGDCONT?"
 COPS = "COPS={}"
 CGPR = "CGPADDR={}"
+COAP = "UCOAP={}"
+COAPC = "UCOAPC={}"
 
 MSG_TYPE = "1"
 
@@ -41,5 +43,7 @@ RESPONSE = {
     CGDCR: (R_OK, None),
     COPS: (R_OK, None),
     CGPR: (R_OK, None),
-    CGAC: (R_OK, None)
+    CGAC: (R_OK, None),
+    COAP: (R_OK, None),
+    COAPC: (R_OK, None)
 }

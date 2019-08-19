@@ -8,18 +8,10 @@ This repository contains python library for NB-IoT ublox SARA-N210 modem. The co
 # Hardware connections
 
 The following four pins from EE-NBIOT-01 module needs to be connected:
-- Tx to Tx GPIO014
-- Rx to Rx GPIO15
+- Tx to GPIO14 (TX)
+- Rx to GPIO15 (RX)
 - VCC to 3.3V
 - GND to GND
-
-# Configuration
-An example configuration is stored in the file `config.dist.json` which should be copied and renamed to `config.dist.json`.
-All the parameteres specified in the config file should be reviewed and updated.
-
-# TODO
-- [ ] CoAP
-- [ ] Downlink (receive from)
 
 # Licence
 
