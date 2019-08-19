@@ -30,15 +30,15 @@ class NbIoT:
 
     def connect(self):
         self.reboot()
-        self.radio_on()
-        self.set_apn()
-        self.select_operator()
-        self.check_if_attached()
-        self.activate_pdp_context()
-        self.create_socket()
+        self.__radio_on()
+        self.__set_apn()
+        self.__select_operator()
+        self.__check_if_attached()
+        self.__activate_pdp_context()
+        self.__create_socket()
 
     def disconnect(self):
-        self.close_socket()
+        self.__close_socket()
 
     def reboot(self):
         self.__log("### REBOOT ###")
@@ -46,57 +46,6 @@ class NbIoT:
         self.__log("##############")
 
         return status
-
-    def radio_on(self):
-        self.__log("### RADIO ON ###")
-        status, _ = self.__execute_cmd(RADIO_ON)
-        self.__log("##############")
-
-        return status
-
-    def radio_off(self):
-        self.__log("### RADIO OFF ###")
-        status, _ = self.__execute_cmd(RADIO_OFF)
-        self.__log("##############")
-
-        return status
-
-    # SARA-N2_ATCommands manual, point 9.3 "Response time up to 3 min"
-    @timeout_decorator.timeout(180)
-    def check_if_attached(self):
-        self.__log("### CHECK IF ATTACHED (up to 180s) ###")
-        online = False
-
-        while not online:
-            status, cgatt = self.__execute_cmd(GPRS)
-
-            if status:
-                online = bool(int(cgatt))
-
-            if not online:
-                time.sleep(5)
-
-        self.__log("##############")
-
-    def create_socket(self):
-        self.__log("### CREATE_SOCKET ###")
-
-        if self.socket < 0:
-            self._complex_cmd = SOCR.format(self.port)
-            status, self.socket = self.__execute_cmd(SOCR)
-            self.socket = int(self.socket)
-
-        self.__log("##############")
-
-    def close_socket(self):
-        self.__log("### CLOSE_SOCKET ###")
-
-        if self.socket >= 0:
-            self._complex_cmd = SOCL.format(self.socket)
-            status, _ = self.__execute_cmd(SOCL)
-
-        self.socket = -1
-        self.__log("##############")
 
     def send_to(self, data, addr):
         self.__log("### SEND_TO ###")
@@ -123,22 +72,31 @@ class NbIoT:
         status, _ = self.__execute_cmd(SOST)
         self.__log("##############")
 
-    def receive_from(self):
-        self.__log("### RECEIVE ###")
-        self._complex_cmd = SORF.format(self.socket, 200)
+    def read_urc(self):
+        while True:
+            x = self.serial.readline()
+            try:
+                x = x.decode()
+            except UnicodeDecodeError as e:
+                continue
 
-        status, _ = self.__execute_cmd(SORF)
-        self.__log("##############")
+            x = x.replace('\r', '').replace('\n', '')
 
-    def get_connection_status(self):
-        self.__log("### CONNECTION STATUS ###")
-        status, _ = self.__execute_cmd(CONS)
-        self.__log("##############")
+            if len(x) == 0:
+                time.sleep(0.1)
+                continue
+
+            self.__log("<-- %s" % x)
 
     def set_urc(self, n):
         self.__log("### SET URC ###")
         self._complex_cmd = SCONN.format(n)
         status, _ = self.__execute_cmd(SCONN)
+
+    def get_connection_status(self):
+        self.__log("### CONNECTION STATUS ###")
+        status, _ = self.__execute_cmd(CONS)
+        self.__log("##############")
 
     def get_imei(self):
         self.__log("### IMEI ###")
@@ -152,18 +110,6 @@ class NbIoT:
             status, self.imsi = self.__execute_cmd(IMSI)
         self.__log("##############")
 
-    def set_apn(self):
-        self.__log("### SET APN ###")
-        self._complex_cmd = CGDCS.format("1,\"IP\",\"{}\"".format(self.apn))
-        status, _ = self.__execute_cmd(CGDCS)
-        self.__log("##############")
-
-    def activate_pdp_context(self):
-        self.__log("### ACTIVATE PDP CONTEXT")
-        self._complex_cmd = CGAC.format("{},{}".format(1, 1))
-        status, _ = self.__execute_cmd(CGAC)
-        self.__log("##############")
-
     def get_pdp_context(self):
         self.__log("### PDP CONTEXT")
         status, _ = self.__execute_cmd(CGDCR)
@@ -175,7 +121,77 @@ class NbIoT:
         status, _ = self.__execute_cmd(CGPR)
         self.__log("##############")
 
-    def select_operator(self):
+    def __radio_on(self):
+        self.__log("### RADIO ON ###")
+        status, _ = self.__execute_cmd(RADIO_ON)
+        self.__log("##############")
+
+        return status
+
+    def __radio_off(self):
+        self.__log("### RADIO OFF ###")
+        status, _ = self.__execute_cmd(RADIO_OFF)
+        self.__log("##############")
+
+        return status
+
+    # SARA-N2_ATCommands manual, point 9.3 "Response time up to 3 min"
+    @timeout_decorator.timeout(180)
+    def __check_if_attached(self):
+        self.__log("### CHECK IF ATTACHED (up to 180s) ###")
+        online = False
+
+        while not online:
+            status, cgatt = self.__execute_cmd(GPRS)
+
+            if status:
+                online = bool(int(cgatt))
+
+            if not online:
+                time.sleep(5)
+
+        self.__log("##############")
+
+    def __create_socket(self):
+        self.__log("### CREATE_SOCKET ###")
+
+        if self.socket < 0:
+            self._complex_cmd = SOCR.format(self.port)
+            status, self.socket = self.__execute_cmd(SOCR)
+            self.socket = int(self.socket)
+
+        self.__log("##############")
+
+    def __close_socket(self):
+        self.__log("### CLOSE_SOCKET ###")
+
+        if self.socket >= 0:
+            self._complex_cmd = SOCL.format(self.socket)
+            status, _ = self.__execute_cmd(SOCL)
+
+        self.socket = -1
+        self.__log("##############")
+
+    # def receive_from(self):
+    #     self.__log("### RECEIVE ###")
+    #     self._complex_cmd = SORF.format(self.socket, 200)
+    #
+    #     status, _ = self.__execute_cmd(SORF)
+    #     self.__log("##############")
+
+    def __set_apn(self):
+        self.__log("### SET APN ###")
+        self._complex_cmd = CGDCS.format("1,\"IP\",\"{}\"".format(self.apn))
+        status, _ = self.__execute_cmd(CGDCS)
+        self.__log("##############")
+
+    def __activate_pdp_context(self):
+        self.__log("### ACTIVATE PDP CONTEXT")
+        self._complex_cmd = CGAC.format("{},{}".format(1, 1))
+        status, _ = self.__execute_cmd(CGAC)
+        self.__log("##############")
+
+    def __select_operator(self):
         self.__log("### SELECT OPERATOR ###")
         self._complex_cmd = COPS.format("1,2,\"{}\"".format(self.mccmnc))
         status, _ = self.__execute_cmd(COPS)
@@ -254,22 +270,6 @@ class NbIoT:
 
         self.__log("---> %s" % full_cmd)
         self.serial.write(full_cmd.encode())
-
-    def read_urc(self):
-        while True:
-            x = self.serial.readline()
-            try:
-                x = x.decode()
-            except UnicodeDecodeError as e:
-                continue
-
-            x = x.replace('\r', '').replace('\n', '')
-
-            if len(x) == 0:
-                time.sleep(0.1)
-                continue
-
-            self.__log("<-- %s" % x)
 
     def __read_response(self):
         last_line, expected_pattern = RESPONSE[self._cmd]
