@@ -13,16 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Example of simple udp text message send to the remote server using NB-IoT
+# Example of ping using NB-IoT
 
 from nbiotpy import NbIoT
 import socket
 
-PORT = 0  # Remote server port
-addr = ('REMOTE_SERVER_IP', PORT)
+addr = ('1.1.1.1', 80)
 hostname = socket.gethostname()
 
 nb = NbIoT(debug=True)
 nb.connect()
-nb.send_to("[{}]: hello!".format(hostname), addr)
+nb.ping(addr[0])
 nb.disconnect()

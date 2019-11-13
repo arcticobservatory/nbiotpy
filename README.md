@@ -13,6 +13,9 @@ The following four pins from EE-NBIOT-01 module needs to be connected:
 - VCC to 3.3V
 - GND to GND
 
+# TODO
+Write what is supported and what is not.
+
 # Licence
 
 NBIoTPy library is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
