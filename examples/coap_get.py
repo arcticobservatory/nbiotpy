@@ -13,16 +13,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Example of simple udp text message send to the remote server using NB-IoT
+# Example of simple CoAP operation
+# Required additional testing
 
 from nbiotpy import NbIoT
 import socket
 
-PORT = 0  # Remote server port
-addr = ('REMOTE_SERVER_IP', PORT)
+addr = ('COAP_SERVER_ADDRESS', 5683)
 hostname = socket.gethostname()
 
 nb = NbIoT(debug=True)
 nb.connect()
-nb.send_to("[{}]: hello!".format(hostname), addr)
+nb.set_coap_server(addr)
+nb.set_coap_uri('/time')
+nb.set_coap_pdu()
+nb.set_current_coap_profile()
+nb.set_coap_profile_valid_flag()
+nb.save_coap_profile()
+nb.restore_and_use_coap_profile()
+nb.select_coap_at()
+nb.do_ucoapc()
 nb.disconnect()
